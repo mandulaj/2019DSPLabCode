@@ -7,3 +7,6 @@
 *.run.xml
 *.gz
 *.toc
+
+code/filter1-nnl.txt
+code/filter2-nnl.txt
