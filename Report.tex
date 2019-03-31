@@ -1,0 +1,117 @@
+\documentclass[a4paper, 12pt]{article} % A4 paper size and default 11pt font size
+\renewcommand{\thesection}{\arabic{section}}
+
+%\usepackage[bottom=2cm,top=2cm, left=2cm, right=2cm]{geometry}
+
+%\usepackage{helvet}
+%\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage[margin=2cm]{geometry}
+
+\usepackage{wrapfig}
+\usepackage{graphicx}
+
+\usepackage{subcaption}
+
+\graphicspath{ {images/} }
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{siunitx}
+%\usepackage{times}
+
+%\usepackage[svgnames]{xcolor} % Required for colour specification
+\usepackage{multirow}
+\usepackage[table,xcdraw,svgnames]{xcolor}
+
+
+\usepackage[utf8]{inputenc} % Required for inputting international characters
+\usepackage[T1]{fontenc} % Output font encoding for international characters
+\usepackage{wasysym}
+
+%% Code synta
+\usepackage{sourcecodepro}
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\scriptsize\ttfamily,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=t,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\usepackage[backend=biber]{biblatex}
+\addbibresource{bibliography.bib}
+\usepackage[hidelinks]{hyperref}
+
+\makeatletter
+\let\@fnsymbol\@arabic
+\makeatother
+
+\newcommand*\samethanks[1][\value{footnote}]{\footnotemark[#1]}
+
+\title{
+	\large{Digital Signal Processing Lab Report} \\
+	\huge{Novel Approach to Real-Time Digital Signal Processing of Stereo Audio}
+}
+
+
+\date{April 5, 2019}
+\author{Tarig Mustafa\thanks{University of Manchester, School of EEE}, Haseeb Malik\samethanks, Jakub Mandula\samethanks, Kevin Golan\samethanks}
+
+
+
+
+\begin{document} 
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+\maketitle
+
+
+
+%----------------------------------------------------------------------------------------
+
+\begin{abstract}
+The following report is composed of two main sections. Real-time audio processing with software, and a proposed high-level hardware design for real-time stereo audio processing. The software section of this report includes sample code to exercise the real-time performance of the Analog Devices ADSP-BF706 device. Applications explored include fractional channel gain manipulation, volume control, 16-bit bandpass and 32-bit stopband finite impulse response filtration, with corresponding coefficients, and sinusoidal generation. The aim of the hardware design is to create a stand-alone system capable of supporting the bandwidth requirements of studio-quality music; outlining key components, high-level connectivity and data flow. 
+\end{abstract}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+
+\input{Exercise1_6.tex}
+
+
+\input{Exercise7.tex}
+
+
+\printbibliography
+Link to code repository: \href{https://github.com/mandulaj/2019DSPLabCode}{https://github.com/mandulaj/2019DSPLabCode}
+
+\end{document}
