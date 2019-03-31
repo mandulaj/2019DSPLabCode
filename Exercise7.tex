@@ -1,7 +1,7 @@
 \section{Hardware Design}
 
 \subsection{Introduction}
-This report presents a design for a standalone real-time stereo audio system that is capable of processing both speech and music. The selected components were chosen in order to provide high-quality audio while maintaining reasonable costs. Additional requirements include adequate debugging capabilities, and a memory to store the result of and accommodate a high-resolution FIR filtering process.\\
+This report presents a design for a standalone real-time stereo audio system that is capable of processing both speech and music. The selected components were chosen in order to provide high-quality audio while maintaining reasonable costs. Additional requirements include adequate debugging capabilities, and a memory to store the result of and accommodate a high-resolution FIR filtering process.
 
 
 \subsection{Specifications}
@@ -46,33 +46,34 @@ A sampling frequency of 48 kHz is today’s industry standard for studio-quality
 \end{table}
 
 \subsection{DPS Processor}
-For the signal processing, the DSP has to perform at least one full convolution per sample. At a sampling frequency of 48 kHz and a minimum number of 2048 taps per channel, this demands at least 200 MMACs. Thus the minimum specifications for the desired processor are listed in the Table \ref{tb:specsDSP}.\\
+For the signal processing, the DSP has to perform at least one full convolution per sample. At a sampling frequency of 48 kHz and a minimum number of 2048 taps per channel, this demands at least 200 MMACs. Thus the minimum specifications for the desired processor are listed in the Table \ref{tb:specsDSP}.
 
-Based on these minimal requirements, the group has selected the Blackfin ADSP-BF592 DSP chip. At a price of only approximately £4, it features two 16-bit MACs operating at up to 400 MHz \autocite{blackfinDSP} . This would theoretically allow single channel, real-time filtering, using up to 8192 filter taps per sample. \\
 
-Alternately, this surplus in computational power can be used for other processes. The chip possesses all necessary hardware communication peripherals in a DSP system. This includes the SPORT and TWI for sending and receiving data from the codec, SPI for stand-alone ROM booting, and UART and JTAG for communicating with the debugger. \\
+Based on these minimal requirements, the group has selected the Blackfin ADSP-BF592 DSP chip. At a price of only approximately £4, it features two 16-bit MACs operating at up to 400 MHz \autocite{blackfinDSP} . This would theoretically allow single channel, real-time filtering, using up to 8192 filter taps per sample. 
+
+Alternately, this surplus in computational power can be used for other processes. The chip possesses all necessary hardware communication peripherals in a DSP system. This includes the SPORT and TWI for sending and receiving data from the codec, SPI for stand-alone ROM booting, and UART and JTAG for communicating with the debugger.
 
 
 
 \subsection{Codec}
-The requirements for the codec is to provide ADC and DAC facilities at 16-bit resolution. However, a codec with a 24-bit resolution was found to be more economical. The main parameters considered were the dynamic range and the Signal-to-Noise ratio (SNR). Other feature requirements for the codec were a stereo-audio interface and SPI capabilities. \\
+The requirements for the codec is to provide ADC and DAC facilities at 16-bit resolution. However, a codec with a 24-bit resolution was found to be more economical. The main parameters considered were the dynamic range and the Signal-to-Noise ratio (SNR). Other feature requirements for the codec were a stereo-audio interface and SPI capabilities.
 
 As a result, the ADAU1961 24-bit stereo audio codec with integrated PLL was chosen. At a price of £2.5 \autocite{digikeyCodec}, it has an SNR of 98 dB and communicates using both SPI and TWI \autocite{codec_datasheet}. These are essential for communicating with the flash ROM and receiving control signals from the DSP chip respectively.
 
 
 
 \subsection{Memory}
-The processor implements a modified Harvard architecture combined with a 2 level hierarchical memory structure \autocite{blackfinDSP}. This allows for high-speed processing of multiple datasets using pipelining. For the particular application of filtering, allowing the data and instructions to be accessed simultaneously.\\
+The processor implements a modified Harvard architecture combined with a 2 level hierarchical memory structure \autocite{blackfinDSP}. This allows for high-speed processing of multiple datasets using pipelining. For the particular application of filtering, allowing the data and instructions to be accessed simultaneously.
 
-The first memory level is implemented in a modified Harvard architecture. One region is allocated for instructions, and another 2 independent regions can be used to store vector data (such as real and imaginary vectors). The second level is intended to be a slower form of memory and thus is implemented in the Von Neumann architecture. This second level is intended to store data for non-speed-critical operations. Additional to the two levels, memory is to be reserved for the memory mapped control registers of peripherals. \\
+The first memory level is implemented in a modified Harvard architecture. One region is allocated for instructions, and another 2 independent regions can be used to store vector data (such as real and imaginary vectors). The second level is intended to be a slower form of memory and thus is implemented in the Von Neumann architecture. This second level is intended to store data for non-speed-critical operations. Additional to the two levels, memory is to be reserved for the memory mapped control registers of peripherals. 
 
 Further to such a layered RAM structure, it is necessary for the Bootloader to be stored in non-volatile memory (flash ROM – via SPI Master). Doing so enables program instructions/firmware to be stored permanently within the system such that the device can operate as standalone from the point of power-on. Further to physically storing program instructions and firmware within the device, in order to accommodate rapid debugging, UART boot mode is to be supported.
 
 \subsection{Interface with Codec}
-Communication with the Codec is established through 2 peripherals: TWI and SPORT.\\ 
+Communication with the Codec is established through 2 peripherals: TWI and SPORT.
 
 TWI is compatible with I2C, a standard protocol, and used for occasional control communications with Codec. TWI is bi-directional and runs at a lower frequency than the other peripheral connection: SPORT. 
-A possible use-case for the TWI is the sharing of information regarding volume. The DSP System would query for volume levels by sending a protocoled message to the Codec, and the Codec would then reply with the volume data (contained in peripheral registers) after having received the information. \\
+A possible use-case for the TWI is the sharing of information regarding volume. The DSP System would query for volume levels by sending a protocoled message to the Codec, and the Codec would then reply with the volume data (contained in peripheral registers) after having received the information.
 
 The SPORT implements the SPI framework for communication with the Codec. SPORT is used for passing digitized serial audio data that is going to be processed from the Codec into the DSP. After the DSP system has completed its processing of the audio signal, the resulting signal is fed back to the codec. 
 
@@ -111,10 +112,10 @@ The serial peripheral interface (SPI) provides the interface to the Flash memory
 
 
 \subsection{PLL}
-Different parts of the DSP run at different clock rates. To deal with the difference in clock speeds in the system, a PLL can be used to localise the high-frequency operations of the processor. Different parts of the system inevitably run at a lower clock speed than the main processor. This is because if they would accommodate the clock speed of the main processor, resulting EM interference and noise would damage performance. Therefore, a PLL is required to maintain the clock speeds that minimise interference in the system’s different parts.\\  
+Different parts of the DSP run at different clock rates. To deal with the difference in clock speeds in the system, a PLL can be used to localize the high-frequency operations of the processor. Different parts of the system inevitably run at a lower clock speed than the main processor. This is because if they would accommodate the clock speed of the main processor, resulting EM interference and noise would damage performance. Therefore, a PLL is required to maintain the clock speeds that minimize interference in the system’s different parts. 
 
 
-The SPORT implementation can be described by the figure above. The transmission of the data and its synchronisation is driven by two clock signals: The Left-Right Clock (LRCLK) and the Bit Clock (BCLK). When the LRCLK transitions from logic 1 to logic 0 (or the opposite), a new stream of data from a channel is signalled to the DSP. The DSP will then read the data from the channels at a rate in-sync with the BCLK. In the system at hand, each channel is defined over 16 bits. The allocation of the SPORT follows Time Division Multiplexing as more than one channel is used in the system. 
+The SPORT implementation can be described by the figure above. The transmission of the data and its synchronization is driven by two clock signals: The Left-Right Clock (LRCLK) and the Bit Clock (BCLK). When the LRCLK transitions from logic 1 to logic 0 (or the opposite), a new stream of data from a channel is signaled to the DSP. The DSP will then read the data from the channels at a rate in-sync with the BCLK. In the system at hand, each channel is defined over 16 bits. The allocation of the SPORT follows Time Division Multiplexing as more than one channel is used in the system. 
 
 
 \subsection{Real-Time DSP System}
