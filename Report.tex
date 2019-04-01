@@ -1,39 +1,47 @@
-\documentclass[a4paper, 12pt]{article} % A4 paper size and default 11pt font size
-\renewcommand{\thesection}{\arabic{section}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Title: Novel Approach to Real-Time Digital Signal Processing of Stereo Audio
+% Authors: Tarig Mustafa, Haseeb Malik, Jakub Mandula, Kevin Golan
+%
+% Notes:
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%\usepackage[bottom=2cm,top=2cm, left=2cm, right=2cm]{geometry}
-
-%\usepackage{helvet}
-%\renewcommand{\familydefault}{\sfdefault}
-
+\documentclass[a4paper, 12pt]{article} % A4 paper size and default 12pt font size
+%% Set Margins
 \usepackage[margin=2cm]{geometry}
+%\usepackage[bottom=2.5cm,top=2.5cm, left=2.5cm, right=2.5cm]{geometry}
 
+
+
+%% Graphis and figures packages
 \usepackage{wrapfig}
 \usepackage{graphicx}
-
 \usepackage{subcaption}
-
 \graphicspath{ {images/} }
 
+%% Math and symbols Packages 
 \usepackage{amsmath}
 \usepackage{amssymb}
-
 \usepackage{siunitx}
-%\usepackage{times}
 
+
+
+
+%% Bibliography and hyperlinks
+\usepackage[backend=biber]{biblatex}
+\addbibresource{bibliography.bib}
+\usepackage[hidelinks]{hyperref}
+
+%% Font and encoding packages
+\usepackage[utf8]{inputenc} % Required for inputting international characters
+\usepackage[T1]{fontenc} % Output font encoding for international characters
+\usepackage{wasysym}
 %\usepackage[svgnames]{xcolor} % Required for colour specification
 \usepackage{multirow}
 \usepackage[table,xcdraw,svgnames]{xcolor}
 
 
-\usepackage[utf8]{inputenc} % Required for inputting international characters
-\usepackage[T1]{fontenc} % Output font encoding for international characters
-\usepackage{wasysym}
-
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{1em}
-
-%% Code synta
+%% Code syntax
 \usepackage{sourcecodepro}
 \usepackage{listings}
 \usepackage{color}
@@ -61,19 +69,29 @@
 	showtabs=false,                  
 	tabsize=2
 }
-
 \lstset{style=mystyle}
 
-\usepackage[backend=biber]{biblatex}
-\addbibresource{bibliography.bib}
-\usepackage[hidelinks]{hyperref}
 
+
+
+%% Make footnotes arabic
 \makeatletter
 \let\@fnsymbol\@arabic
 \makeatother
 
-\newcommand*\samethanks[1][\value{footnote}]{\footnotemark[#1]}
+%% Set of useful commands
+\newcommand*\samethanks[1][\value{footnote}]{\footnotemark[#1]} %% \samethanks to use same footnote
 
+
+%% Set Paragraph indetnation and separation
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1em}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  Title
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \title{
 	\large{Digital Signal Processing Lab Report} \\
 	\huge{Novel Approach to Real-Time Digital Signal Processing of Stereo Audio}
@@ -85,28 +103,37 @@
 
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  Start of document
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document} 
 
-%----------------------------------------------------------------------------------------
-%	TITLE PAGE
-%----------------------------------------------------------------------------------------
+
+% Title page
+
 \maketitle
 
 
-
-%----------------------------------------------------------------------------------------
-
+% The abstract
 \begin{abstract}
 The following report is composed of two main sections. Real-time audio processing with software, and a proposed high-level hardware design for real-time stereo audio processing. The software section of this report includes sample code to exercise the real-time performance of the Analog Devices ADSP-BF706 device. Applications explored include fractional channel gain manipulation, volume control, 16-bit bandpass and 32-bit stopband finite impulse response filtration, with corresponding coefficients, and sinusoidal generation. The aim of the hardware design is to create a stand-alone system capable of supporting the bandwidth requirements of studio-quality music; outlining key components, high-level connectivity and data flow. 
 \end{abstract}
 
 \newpage
 
+% Table of contents
 \tableofcontents
 
 \newpage
-
+ 
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  Start of main body
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Exercises 1-6
 \input{Exercise1_6.tex}
@@ -114,7 +141,11 @@ The following report is composed of two main sections. Real-time audio processin
 % Report (Exercise 7)
 \input{Exercise7.tex}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  References
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \printbibliography
 Link to code repository: \href{https://github.com/mandulaj/2019DSPLabCode}{https://github.com/mandulaj/2019DSPLabCode}
 
