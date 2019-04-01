@@ -8,9 +8,9 @@ Date  : 12.10.2017 (modified 5/3/19)
 .align 4;
 .global _main;
 #include <defBF706.h>
- 
+
 _main:
-call codec_configure; 
+call codec_configure;
 call sport_configure;
 
 R3.H=0.925r;							// Setting constant value to intially multiply sample with (0.925 = 3.7/2^(2))
@@ -21,17 +21,17 @@ wait_left:
 R0=[REG_SPORT0_CTL_B]; CC=BITTST(R0, 31); if !CC jump wait_left;
 R0=[REG_SPORT0_RXPRI_B];
 
-// Left channel code added for Excersise 1
+// Left channel code added for Exersise 1
 R0 <<= 0x02;							// Multiplying sample value by 4 via bit shifting
 R2=R0*R3;								// Multiplying resultant value by 0.925
 
 // Write left out, R2=3.7*R0
-[REG_SPORT0_TXPRI_A]=R2;                                         
-wait_right:												
+[REG_SPORT0_TXPRI_A]=R2;
+wait_right:
 // Wait right flag in and read
 R0=[REG_SPORT0_CTL_B]; CC=BITTST(R0, 31); if !CC jump wait_right;
 // Write right out
-R0=[REG_SPORT0_RXPRI_B]; [REG_SPORT0_TXPRI_A]=R0; 
+R0=[REG_SPORT0_RXPRI_B]; [REG_SPORT0_TXPRI_A]=R0;
 jump get_audio;
 rts;
 ._main.end:

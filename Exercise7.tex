@@ -5,7 +5,7 @@ This report presents a design for a standalone real-time stereo audio system tha
 
 
 \subsection{Specifications}
-The ADC and DAC resolution was chosen to be 16 bits as any higher resolution is considered imperceptible for a typical human ear \autocite{jackson2014}. This results in a SQNR of 96 dB - as per equation \ref{eq:sqnr}, which is more than the SNR of most CODECs. In order to maximize the available dynamic range, the minimal SNR of the CODEC was set to be at least 90dB.
+The ADC and DAC resolution was chosen to be 16 bits as any higher resolution is considered imperceptible for a typical human ear \autocite{jackson2014}. This results in a SQNR of 96 dB - as per equation \ref{eq:sqnr}, which is more than the SNR of most Codecs. In order to maximize the available dynamic range, the minimal SNR of the Codec was set to be at least 90dB.
 
 \begin{equation}\label{eq:sqnr}
 SQNR = 20\log_{10}(2^N)    
@@ -22,9 +22,9 @@ A sampling frequency of 48 kHz is today’s industry standard for studio-quality
 	\begin{tabular}{|l|l|}
 		\hline
 		\textbf{Sampling Frequency}            & 48kHz                            \\ \hline
-		\textbf{Bitrate (per channel)}         & 16bit                            \\ \hline
+		\textbf{Bit-rate (per channel)}         & 16bit                            \\ \hline
 		\textbf{Minimum number of filter taps} & 2048 (stereo)                    \\ \hline
-		\textbf{Minimum number of MMACs}       & 200MMAC                          \\ \hline
+		\textbf{Minimum number of MMACs}       & 200 MMAC                          \\ \hline
 		\textbf{Peripherals}                   & SPI, TWI, UART, PLL, GPIO, SPORT \\ \hline
 	\end{tabular}
 	\caption{DSP system minimal specifications requirements}
@@ -45,43 +45,43 @@ A sampling frequency of 48 kHz is today’s industry standard for studio-quality
 	\label{tb:specsCodec}
 \end{table}
 
-\subsection{DPS Processor}
+\subsection{DSP Processor}
 For the signal processing, the DSP has to perform at least one full convolution per sample. At a sampling frequency of 48 kHz and a minimum number of 2048 taps per channel, this demands at least 200 MMACs. Thus the minimum specifications for the desired processor are listed in the Table \ref{tb:specsDSP}.
 
 
 Based on these minimal requirements, the group has selected the Blackfin ADSP-BF592 DSP chip. At a price of only approximately £4, it features two 16-bit MACs operating at up to 400 MHz \autocite{blackfinDSP} . This would theoretically allow single channel, real-time filtering, using up to 8192 filter taps per sample. 
 
-Alternately, this surplus in computational power can be used for other processes. The chip possesses all necessary hardware communication peripherals in a DSP system. This includes the SPORT and TWI for sending and receiving data from the codec, SPI for stand-alone ROM booting, and UART and JTAG for communicating with the debugger.
+Alternately, this surplus in computational power can be used for other processes. The chip possesses all necessary hardware communication peripherals in a DSP system. This includes the SPORT and TWI for sending and receiving data from the Codec, SPI for stand-alone ROM booting, and UART and JTAG for communicating with the debugger.
 
 
 
 \subsection{Codec}
-The requirements for the codec is to provide ADC and DAC facilities at 16-bit resolution. However, a codec with a 24-bit resolution was found to be more economical. The main parameters considered were the dynamic range and the Signal-to-Noise ratio (SNR). Other feature requirements for the codec were a stereo-audio interface and SPI capabilities.
+The requirements for the Codec is to provide ADC and DAC facilities at 16-bit resolution. However, a Codec with a 24-bit resolution was found to be more economical. The main parameters considered were the dynamic range and the Signal-to-Noise ratio (SNR). Other feature requirements for the Codec were a stereo-audio interface and SPI capabilities.
 
-As a result, the ADAU1961 24-bit stereo audio codec with integrated PLL was chosen. At a price of £2.5 \autocite{digikeyCodec}, it has an SNR of 98 dB and communicates using both SPI and TWI \autocite{codec_datasheet}. These are essential for communicating with the flash ROM and receiving control signals from the DSP chip respectively.
+As a result, the ADAU1961 24-bit stereo audio Codec with integrated PLL was chosen. At a price of £2.5 \autocite{digikeyCodec}, it has an SNR of 98 dB and communicates using both SPI and TWI \autocite{codec_datasheet}. These are essential for communicating with the flash ROM and receiving control signals from the DSP chip respectively.
 
 
 
 \subsection{Memory}
-The processor implements a modified Harvard architecture combined with a 2 level hierarchical memory structure \autocite{blackfinDSP}. This allows for high-speed processing of multiple datasets using pipelining. For the particular application of filtering, allowing the data and instructions to be accessed simultaneously.
+The processor implements a modified Harvard architecture combined with a 2 level hierarchical memory structure \autocite{blackfinDSP}. This allows for high-speed processing of multiple data sets using pipe-lining. For the particular application of filtering, allowing the data and instructions to be accessed simultaneously.
 
 The first memory level is implemented in a modified Harvard architecture. One region is allocated for instructions, and another 2 independent regions can be used to store vector data (such as real and imaginary vectors). The second level is intended to be a slower form of memory and thus is implemented in the Von Neumann architecture. This second level is intended to store data for non-speed-critical operations. Additional to the two levels, memory is to be reserved for the memory mapped control registers of peripherals. 
 
-Further to such a layered RAM structure, it is necessary for the Bootloader to be stored in non-volatile memory (flash ROM – via SPI Master). Doing so enables program instructions/firmware to be stored permanently within the system such that the device can operate as standalone from the point of power-on. Further to physically storing program instructions and firmware within the device, in order to accommodate rapid debugging, UART boot mode is to be supported.
+Further to such a layered RAM structure, it is necessary for the boot loader to be stored in non-volatile memory (flash ROM – via SPI Master). Doing so enables program instructions/firmware to be stored permanently within the system such that the device can operate as standalone from the point of power-on. Further to physically storing program instructions and firmware within the device, in order to accommodate rapid debugging, UART boot mode is to be supported.
 
 \subsection{Interface with Codec}
 Communication with the Codec is established through 2 peripherals: TWI and SPORT.
 
 TWI is compatible with I2C, a standard protocol, and used for occasional control communications with Codec. TWI is bi-directional and runs at a lower frequency than the other peripheral connection: SPORT. 
-A possible use-case for the TWI is the sharing of information regarding volume. The DSP System would query for volume levels by sending a protocoled message to the Codec, and the Codec would then reply with the volume data (contained in peripheral registers) after having received the information.
+A possible use-case for the TWI is the sharing of information regarding volume. The DSP System would query for volume levels by sending a protocol message to the Codec, and the Codec would then reply with the volume data (contained in peripheral registers) after having received the information.
 
-The SPORT implements the SPI framework for communication with the Codec. SPORT is used for passing digitized serial audio data that is going to be processed from the Codec into the DSP. After the DSP system has completed its processing of the audio signal, the resulting signal is fed back to the codec. 
+The SPORT implements the SPI framework for communication with the Codec. SPORT is used for passing digitized serial audio data that is going to be processed from the Codec into the DSP. After the DSP system has completed its processing of the audio signal, the resulting signal is fed back to the Codec. 
 
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth]{time.png}
-	\caption{Timing diagram for Codec/DPS communication.}
+	\caption{Timing diagram for Codec/DSP communication.}
 	\label{fig:timing}
 \end{figure}
 
@@ -108,7 +108,7 @@ The UART ports in the DSP system’s processor are used to interface the system 
 
 \subsection{SPI and Flash memory}
 
-The serial peripheral interface (SPI) provides the interface to the Flash memory for accessing the bootloader when operating in a standalone environment. SPI provides a mechanism to interface a high-speed system with external peripherals that run at lower clock speeds. Flash memory is non-volatile and electrically erasable. In the context of this DSP system, it would be used to store the operating system. Upon reset or system launch, the OS would then be read from the processor’s code memory before execution - making it standalone. 
+The serial peripheral interface (SPI) provides the interface to the Flash memory for accessing the boot-loader when operating in a standalone environment. SPI provides a mechanism to interface a high-speed system with external peripherals that run at lower clock speeds. Flash memory is non-volatile and electrically erasable. In the context of this DSP system, it would be used to store the operating system. Upon reset or system launch, the OS would then be read from the processor’s code memory before execution - making it standalone. 
 
 
 \subsection{PLL}
@@ -123,7 +123,7 @@ The SPORT implementation can be described by the figure above. The transmission 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.5\textwidth]{diagram.png}
-	\caption{Real-time DPS Design Block diagram.}
+	\caption{Real-time DSP Design Block diagram.}
 	\label{fig:block}
 \end{figure}
 
@@ -139,6 +139,6 @@ This report examined the various design constraints and considerations involved 
 	\item External clocking system 
 	\item UART interface for boot mode and serial connection to computer 
 	\item Serial flash memory to hold the operating system, connected to the SPI 
-	\item ADAU1961 24-bit stereo codec, connected to TWI (control) and SPORT (audio data)
+	\item ADAU1961 24-bit stereo Codec, connected to TWI (control) and SPORT (audio data)
 	\item JTAG debugging interface
 \end{itemize}

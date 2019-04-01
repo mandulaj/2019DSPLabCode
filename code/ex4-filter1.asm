@@ -9,7 +9,7 @@ Date  : 29.09.2017 (modified 5/3/19)
 .BYTE2 filter[] = "filter1.txt";		// Importing co-efficients file as a byte array
 .section program;
 .global _main;
-.align 4; 
+.align 4;
 # include <defBF706.h>
 
 _main:
@@ -35,7 +35,7 @@ R0=[REG_SPORT0_RXPRI_B];
 //Setting up Circular buffer for FIR Filter and Filtering
 A0 = 0 || W[I0++]= R0.H|| R1.H = W[I1++];				// Retrieving the first sample and filter coeff
 LOOP LC0=P0;											// Starting of iterator (iterating through coeffs and previous samples - to carry out convolution)
-A0+= R0.H * R1.H || R0.H = W[I0++] || R1.H = W[I1++]; 	// Filtering the Input (.H used as 16 bit FIR in excercise spec)
+A0+= R0.H * R1.H || R0.H = W[I0++] || R1.H = W[I1++]; 	// Filtering the Input (.H used as 16 bit FIR in exercise spec)
 LOOP_END;												// Concluding iterator
 A0+= R0.H * R1.H||I0-=2;								// Backtracking 2 bytes due to overshoot
 

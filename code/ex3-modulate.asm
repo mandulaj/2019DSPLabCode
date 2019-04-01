@@ -8,41 +8,41 @@ Date  : 28.09.2017 (modified 5/3/19)
 */
 
 .section program;
-.align 4; 
+.align 4;
 .global _main;
 #include <defBF706.h>
- 
+
 _main:
-call codec_configure; 
+call codec_configure;
 call sport_configure;
 
 get_audio:
-wait_left: 
+wait_left:
 // Wait left flag in
-R0=[REG_SPORT0_CTL_B]; 
-CC=BITTST(R0, 31); 
-if !CC jump wait_left; 
+R0=[REG_SPORT0_CTL_B];
+CC=BITTST(R0, 31);
+if !CC jump wait_left;
 // Read and modulate. Note codec is 24-bit;
 R0=[REG_SPORT0_RXPRI_B];
 
-// Left channel Code added for Excersise 3
-R2=R0*R1;			// Left in * Right in (to excercise spec)
+// Left channel Code added for Exersise 3
+R2=R0*R1;			// Left in * Right in (to exercise spec)
 R2<<=0x08;			// Shifting as DAC is 24 Bit(32-24=8)
-R2=R1+R2;		    // Setting output to (Right in + (Left in * Right in))  
+R2=R1+R2;		    // Setting output to (Right in + (Left in * Right in))
 
 // Write left out
-[REG_SPORT0_TXPRI_A]=R2;  
+[REG_SPORT0_TXPRI_A]=R2;
 wait_right:
 // Wait right flag in
-R1=[REG_SPORT0_CTL_B]; 
-CC=BITTST(R1, 31); 
+R1=[REG_SPORT0_CTL_B];
+CC=BITTST(R1, 31);
 if !CC jump wait_right; 
 // Read and modulate. Note codec is 24-bit;
 // Also add carrier
 R1=[REG_SPORT0_RXPRI_B];
 
 // Right channel code added
-R2=R0*R1;			// Left in * Right in (to excercise spec)
+R2=R0*R1;			// Left in * Right in (to exercise spec)
 R2<<=0x08;			// Setting output to (Left in * Right in) and Shifting as DAC is 24 Bit
 
 [REG_SPORT0_TXPRI_A]=R2; // Write right out

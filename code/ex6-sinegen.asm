@@ -11,16 +11,16 @@ Date  : 02.10.2017 (modified 5/3/19)
 .section L1_data_b;  // Linker places 6 kHz LUT starting at 0x11900000
 .BYTE4/r32 lut2[]=0.0r,0.7071r,0.999r,0.7071r,0.0r,-0.7071r,-0.999r,-0.7071r;	//Hard coded 6 kHz values from LUT
 
-.section program; 
-.global _main; 
-.align 4;  
-# include <defBF706.h>   
+.section program;
+.global _main;
+.align 4;
+# include <defBF706.h>
 
 _main:
-call codec_configure; 
+call codec_configure;
 call sport_configure;
 
-P0=length(lut1)*4;							//Initializing a circular buffer to hold LUT for 12 kHz				
+P0=length(lut1)*4;							//Initializing a circular buffer to hold LUT for 12 kHz
 I0=0x11800000;B0=I0;L0=P0;					//Populating buffer 1 with LUT data for 12 kHz
 P0=length(lut2)*4;							//Initializing another circular buffer to hold LUT for 6 kHz
 I1=0x11900000;B1=I1;L1=P0;					//Populating buffer 2 with LUT data for 6 kHz
@@ -28,8 +28,8 @@ I1=0x11900000;B1=I1;L1=P0;					//Populating buffer 2 with LUT data for 6 kHz
 get_audio:
 wait_left:
 // Wait for left data then dummy read
-R0=[REG_SPORT0_CTL_B]; 
-CC=BITTST(R0, 31); 
+R0=[REG_SPORT0_CTL_B];
+CC=BITTST(R0, 31);
 if !CC jump wait_left;
 R0=[REG_SPORT0_RXPRI_B];
 
@@ -39,10 +39,10 @@ R0=R0>>8;									//Bit-shifting to accomodate 24 Bit DAC in codec
 [REG_SPORT0_TXPRI_A]=R0;
 wait_right:
 // Wait for right data then dummy read
-R0=[REG_SPORT0_CTL_B]; 
-CC=BITTST(R0, 31); 
+R0=[REG_SPORT0_CTL_B];
+CC=BITTST(R0, 31);
 if !CC jump wait_right;
-R0=[REG_SPORT0_RXPRI_B]; 
+R0=[REG_SPORT0_RXPRI_B];
 
 R0=[I1++];									//Writing value from LUT for 6 kHz to right output, then moving to next value
 R0=R0>>8;									//Bit-shifting to accomodate 24 bit DAC in codec
