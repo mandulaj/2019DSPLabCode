@@ -83,9 +83,10 @@ The SPORT implements the SPI framework for communication with the Codec. SPORT i
 	\includegraphics[width=\textwidth]{time.png}
 	\caption{Timing diagram for Codec/DSP communication.}
 	\label{fig:timing}
+	
 \end{figure}
 
-
+The SPORT implementation can be described by the figure above. The transmission of the data and its synchronization is driven by two clock signals: The Left-Right Clock (LRCLK) and the Bit Clock (BCLK). When the LRCLK transitions from logic 1 to logic 0 (or the opposite), a new stream of data from a channel is signaled to the DSP. The DSP will then read the data from the channels at a rate in-sync with the BCLK. In the system at hand, each channel is defined over 16 bits. The allocation of the SPORT follows Time Division Multiplexing as more than one channel is used in the system. 
 
 
 \subsection{GPIO}
@@ -113,9 +114,6 @@ The serial peripheral interface (SPI) provides the interface to the Flash memory
 
 \subsection{PLL}
 Different parts of the DSP run at different clock rates. To deal with the difference in clock speeds in the system, a PLL can be used to localize the high-frequency operations of the processor. Different parts of the system inevitably run at a lower clock speed than the main processor. This is because if they would accommodate the clock speed of the main processor, resulting EM interference and noise would damage performance. Therefore, a PLL is required to maintain the clock speeds that minimize interference in the system’s different parts. 
-
-
-The SPORT implementation can be described by the figure above. The transmission of the data and its synchronization is driven by two clock signals: The Left-Right Clock (LRCLK) and the Bit Clock (BCLK). When the LRCLK transitions from logic 1 to logic 0 (or the opposite), a new stream of data from a channel is signaled to the DSP. The DSP will then read the data from the channels at a rate in-sync with the BCLK. In the system at hand, each channel is defined over 16 bits. The allocation of the SPORT follows Time Division Multiplexing as more than one channel is used in the system. 
 
 
 \subsection{Real-Time DSP System}
