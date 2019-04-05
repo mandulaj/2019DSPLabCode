@@ -69,6 +69,10 @@ The first memory level is implemented in a modified Harvard architecture. One re
 
 Further to such a layered RAM structure, it is necessary for the boot loader to be stored in non-volatile memory (flash ROM – via SPI Master). Doing so enables program instructions/firmware to be stored permanently within the system such that the device can operate as standalone from the point of power-on. Further to physically storing program instructions and firmware within the device, in order to accommodate rapid debugging, UART boot mode is to be supported.
 
+\subsection{Firmware and OS}
+
+
+
 \subsection{Interface with Codec}
 Communication with the Codec is established through 2 peripherals: TWI and SPORT.
 
