@@ -45,13 +45,21 @@ A sampling frequency of 48 kHz is today’s industry standard for studio-quality
 	\label{tb:specsCodec}
 \end{table}
 
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.5\textwidth]{diagram.jpg}
+	\caption{Real-time DSP Design Block diagram.}
+	\label{fig:block}
+\end{figure}
+
+
 \subsection{DSP Processor}
 For the signal processing, the DSP has to perform at least one full convolution per sample. At a sampling frequency of 48 kHz and a minimum number of 2048 taps per channel, this demands at least 200 MMACs. Thus the minimum specifications for the desired processor are listed in the Table \ref{tb:specsDSP}.
 
 
 Based on these minimal requirements, the group has selected the Blackfin ADSP-BF592 DSP chip. At a price of only approximately £4, it features two 16-bit MACs operating at up to 400 MHz \autocite{blackfinDSP} . This would theoretically allow single channel, real-time filtering, using up to 8192 filter taps per sample. 
 
-Alternately, this surplus in computational power can be used for other processes. The chip possesses all necessary hardware communication peripherals in a DSP system. This includes the SPORT and TWI for sending and receiving data from the Codec, SPI for stand-alone ROM booting, and UART and JTAG for communicating with the debugger.
+Alternately, this surplus in computational power can be used for other processes. The chip possesses all necessary hardware communication peripherals in a DSP system. This includes the SPORT and TWI for sending and receiving data from the Codec, SPI for stand-alone ROM booting, and UART and JTAG for communicating with the debugger. The full block diagram for the system is shown in Figure \ref{fig:block}. 
 
 
 
@@ -68,6 +76,7 @@ The processor implements a modified Harvard architecture combined with a 2 level
 The first memory level is implemented in a modified Harvard architecture. One region is allocated for instructions, and another 2 independent regions can be used to store vector data (such as real and imaginary vectors). The second level is intended to be a slower form of memory and thus is implemented in the Von Neumann architecture. This second level is intended to store data for non-speed-critical operations. Additional to the two levels, memory is to be reserved for the memory mapped control registers of peripherals. 
 
 Further to such a layered RAM structure, it is necessary for the boot loader to be stored in non-volatile memory (flash ROM – via SPI Master). Doing so enables program instructions/firmware to be stored permanently within the system such that the device can operate as standalone from the point of power-on. Further to physically storing program instructions and firmware within the device, in order to accommodate rapid debugging, UART boot mode is to be supported.
+\clearpage
 
 \subsection{Firmware and OS}
 Based on the specifications for the proposed system, it was decided not to pursue the intergration of a firmware-based Operating System. The hardware design is proposed with the intention of running a single stand-alone embedded program. Abstraction from the hardware at the expense of computational power would then conflict with the intended purpose of this system - high efficiency for a dedicated application. 
@@ -90,7 +99,7 @@ The SPORT implements the SPI framework for communication with the Codec. SPORT i
 	
 \end{figure}
 
-The SPORT implementation can be described by the figure above. The transmission of the data and its synchronization is driven by two clock signals: The Left-Right Clock (LRCLK) and the Bit Clock (BCLK). When the LRCLK transitions from logic 1 to logic 0 (or the opposite), a new stream of data from a channel is signaled to the DSP. The DSP will then read the data from the channels at a rate in-sync with the BCLK. In the system at hand, each channel is defined over 16 bits. The allocation of the SPORT follows Time Division Multiplexing as more than one channel is used in the system. 
+The SPORT implementation can be described by Figure \ref{fig:timing}. The transmission of the data and its synchronization is driven by two clock signals: The Left-Right Clock (LRCLK) and the Bit Clock (BCLK). When the LRCLK transitions from logic 1 to logic 0 (or the opposite), a new stream of data from a channel is signaled to the DSP. The DSP will then read the data from the channels at a rate in-sync with the BCLK. In the system at hand, each channel is defined over 16 bits. The allocation of the SPORT follows Time Division Multiplexing as more than one channel is used in the system. 
 
 
 \subsection{GPIO}
@@ -118,16 +127,6 @@ The serial peripheral interface (SPI) provides the interface to the Flash memory
 
 \subsection{PLL}
 Different parts of the DSP run at different clock rates. To deal with the difference in clock speeds in the system, a PLL can be used to localize the high-frequency operations of the processor. Different parts of the system inevitably run at a lower clock speed than the main processor. This is because if they would accommodate the clock speed of the main processor, resulting EM interference and noise would damage performance. Therefore, a PLL is required to maintain the clock speeds that minimize interference in the system’s different parts. 
-
-
-\subsection{Real-Time DSP System}
-
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=0.5\textwidth]{diagram.png}
-	\caption{Real-time DSP Design Block diagram.}
-	\label{fig:block}
-\end{figure}
 
 
 
