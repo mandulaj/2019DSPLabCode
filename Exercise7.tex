@@ -70,7 +70,7 @@ The first memory level is implemented in a modified Harvard architecture. One re
 Further to such a layered RAM structure, it is necessary for the boot loader to be stored in non-volatile memory (flash ROM – via SPI Master). Doing so enables program instructions/firmware to be stored permanently within the system such that the device can operate as standalone from the point of power-on. Further to physically storing program instructions and firmware within the device, in order to accommodate rapid debugging, UART boot mode is to be supported.
 
 \subsection{Firmware and OS}
-
+Based on the specifications for the proposed system, it was decided not to pursue the intergration of a firmware-based Operating System. The hardware design is proposed with the intention of running a single stand-alone embedded program. Abstraction from the hardware at the expense of computational power would then conflict with the intended purpose of this system - high efficiency for a dedicated application. 
 
 
 \subsection{Interface with Codec}
